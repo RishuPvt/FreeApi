@@ -1,0 +1,165 @@
+import { ArrowLeft, Upload } from 'lucide-react';
+import { useState } from 'react';
+
+interface UploadFormProps {
+  onBack: () => void;
+}
+
+export function UploadForm({ onBack }: UploadFormProps) {
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    language: '',
+    framework: '',
+    author: '',
+    githubUrl: ''
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+    // Handle form submission here
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <button
+        onClick={onBack}
+        className="flex items-center text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-8"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        Back to home
+      </button>
+
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+        <div className="p-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Share Your Backend</h1>
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Project Title *
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                placeholder="Enter project title"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Description *
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                required
+                rows={4}
+                className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                placeholder="Describe your backend project"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <label htmlFor="language" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Language *
+                </label>
+                <select
+                  id="language"
+                  name="language"
+                  value={formData.language}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                >
+                  <option value="">Select Language</option>
+                  <option value="JavaScript">JavaScript</option>
+                  <option value="Python">Python</option>
+                  <option value="Go">Go</option>
+                  <option value="Rust">Rust</option>
+                  <option value="Java">Java</option>
+                  <option value="C#">C#</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="framework" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Framework *
+                </label>
+                <select
+                  id="framework"
+                  name="framework"
+                  value={formData.framework}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                >
+                  <option value="">Select Framework</option>
+                  <option value="Express">Express</option>
+                  <option value="Django">Django</option>
+                  <option value="FastAPI">FastAPI</option>
+                  <option value="Spring Boot">Spring Boot</option>
+                  <option value="ASP.NET">ASP.NET</option>
+                  <option value="NestJS">NestJS</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="author" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Author Name *
+              </label>
+              <input
+                type="text"
+                id="author"
+                name="author"
+                value={formData.author}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                placeholder="Your name"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="githubUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                GitHub Repository URL (optional)
+              </label>
+              <input
+                type="url"
+                id="githubUrl"
+                name="githubUrl"
+                value={formData.githubUrl}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                placeholder="https://github.com/username/repository"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full flex items-center justify-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+            >
+              <Upload className="w-5 h-5 mr-2" />
+              Upload Project
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
