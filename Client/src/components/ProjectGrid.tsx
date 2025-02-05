@@ -1,12 +1,13 @@
-import { Download, Github, Star, ThumbsUp } from 'lucide-react';
+import { Download, Github, Star, ThumbsUp, Heart } from 'lucide-react';
 import type { Backend } from '../types';
 
 interface ProjectGridProps {
   projects: Backend[];
   onProjectClick: (project: Backend) => void;
+  onLike: (projectId: string) => void;
 }
 
-export function ProjectGrid({ projects, onProjectClick }: ProjectGridProps) {
+export function ProjectGrid({ projects, onProjectClick, onLike }: ProjectGridProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -64,7 +65,17 @@ export function ProjectGrid({ projects, onProjectClick }: ProjectGridProps) {
                     {project.author}
                   </span>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onLike(project.id);
+                    }}
+                    className="flex items-center text-gray-600 dark:text-gray-400 hover:text-pink-500 dark:hover:text-pink-400 transition-colors"
+                  >
+                    <Heart className={`w-4 h-4 mr-1 ${project.likes ? 'fill-current text-pink-500' : ''}`} />
+                    <span className="text-sm">{project.likes || 0}</span>
+                  </button>
                   <div className="flex items-center text-emerald-500">
                     <ThumbsUp className="w-4 h-4 mr-1" />
                     <span className="text-sm">{project.rating}%</span>

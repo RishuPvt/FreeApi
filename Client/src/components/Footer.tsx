@@ -1,6 +1,19 @@
 import { Code2, Github, Twitter } from 'lucide-react';
+import type { View } from '../types';
 
-export function Footer() {
+interface FooterProps {
+  currentView: View;
+  onDocsClick: () => void;
+}
+
+export function Footer({ currentView, onDocsClick }: FooterProps) {
+  const getLinkClasses = (view: View) => {
+    const baseClasses = "transition-colors";
+    const activeClasses = "text-indigo-600 dark:text-indigo-400";
+    const inactiveClasses = "text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400";
+    return `${baseClasses} ${currentView === view ? activeClasses : inactiveClasses}`;
+  };
+
   return (
     <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -36,9 +49,12 @@ export function Footer() {
             </h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <button 
+                  onClick={onDocsClick}
+                  className={getLinkClasses('docs')}
+                >
                   Documentation
-                </a>
+                </button>
               </li>
               <li>
                 <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">

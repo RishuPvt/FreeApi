@@ -9,6 +9,7 @@ export interface Backend {
   stars: number;
   downloads: number;
   rating: number;
+  likes?: number;
   createdAt: string;
   githubUrl?: string;
 }

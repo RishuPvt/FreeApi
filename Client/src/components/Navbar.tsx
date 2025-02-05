@@ -1,14 +1,24 @@
 import { Code2, Github, Menu } from 'lucide-react';
 import { useState } from 'react';
 import { ThemeToggle } from './ThemeToggle';
+import type { View } from '../types';
 
 interface NavbarProps {
   onUploadClick: () => void;
   onHomeClick: () => void;
+  onDocsClick: () => void;
+  currentView: View;
 }
 
-export function Navbar({ onUploadClick, onHomeClick }: NavbarProps) {
+export function Navbar({ onUploadClick, onHomeClick, onDocsClick, currentView }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const getLinkClasses = (view: View) => {
+    const baseClasses = "transition-colors";
+    const activeClasses = "text-indigo-600 dark:text-indigo-400";
+    const inactiveClasses = "text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400";
+    return `${baseClasses} ${currentView === view ? activeClasses : inactiveClasses}`;
+  };
 
   return (
     <nav className="fixed top-0 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 z-50">
@@ -23,19 +33,22 @@ export function Navbar({ onUploadClick, onHomeClick }: NavbarProps) {
           <div className="hidden md:flex items-center space-x-8">
             <button
               onClick={onHomeClick}
-              className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
+              className={getLinkClasses('home')}
             >
               Browse
             </button>
             <button
               onClick={onUploadClick}
-              className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
+              className={getLinkClasses('upload')}
             >
               Upload
             </button>
-            <a href="#" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">
+            <button
+              onClick={onDocsClick}
+              className={getLinkClasses('docs')}
+            >
               Documentation
-            </a>
+            </button>
             <ThemeToggle />
             <button className="flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
               <Github className="w-5 h-5 mr-2" />
@@ -65,7 +78,7 @@ export function Navbar({ onUploadClick, onHomeClick }: NavbarProps) {
                 onHomeClick();
                 setIsMenuOpen(false);
               }}
-              className="block w-full text-left px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className={`block w-full text-left px-3 py-2 rounded-md ${getLinkClasses('home')}`}
             >
               Browse
             </button>
@@ -74,13 +87,19 @@ export function Navbar({ onUploadClick, onHomeClick }: NavbarProps) {
                 onUploadClick();
                 setIsMenuOpen(false);
               }}
-              className="block w-full text-left px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className={`block w-full text-left px-3 py-2 rounded-md ${getLinkClasses('upload')}`}
             >
               Upload
             </button>
-            <a href="#" className="block px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+            <button
+              onClick={() => {
+                onDocsClick();
+                setIsMenuOpen(false);
+              }}
+              className={`block w-full text-left px-3 py-2 rounded-md ${getLinkClasses('docs')}`}
+            >
               Documentation
-            </a>
+            </button>
             <button className="w-full mt-2 flex items-center justify-center px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">
               <Github className="w-5 h-5 mr-2" />
               Sign In
