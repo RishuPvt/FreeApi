@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 //Handler : To manage user registration
 const registerUser = async (req, res) => {
   const { email, password, name } = req.body;
+
   if (!email || !name || !password) {
     throw new ApiError(404, "Email and Name field is req for Registration");
   }
@@ -26,6 +27,7 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     },
   });
+
   return res
     .status(200)
     .json(new ApiResponse(200, user, "User Register Succesfully"));
@@ -84,9 +86,44 @@ const loginUser = async (req, res) => {
     );
 };
 
+const logoutUser = async (req, res) => {
+  const userId = req.user?.id;
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
 
-export {
-  registerUser,
-  loginUser,
- 
+    if (!user) {
+      throw new ApiError();
+    }
+    const logout = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      data: {
+        refreshToken: null,
+      },
+    });
+    const options = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    };
+    return res
+      .status(200)
+      .clearCookie("accessToken", options)
+      .clearCookie("refreshToken", options)
+      .json(
+        new ApiResponse(200, "User logged out successfully", {
+          id: user.id,
+          email: user.email,
+        })
+      );
+  } catch (error) {
+    throw new ApiError(500, "Error while logging out user");
+  }
 };
+
+export { registerUser, loginUser, logoutUser };
