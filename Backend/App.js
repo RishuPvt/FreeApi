@@ -16,4 +16,9 @@ import UserRouter from "../Backend/Src/Routes/User.Routes.js";
 
 app.use("/api/v1/users", UserRouter);
 
+
+import ProjectRouter from "../Backend/Src/Routes/Project.Routes.js"
+
+app.use("/api/v1/projects", ProjectRouter)
+
 export { app };

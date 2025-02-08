@@ -33,8 +33,6 @@ model Project {
   userId      String
   language    String
   framework   String
-  name        String
-  files       String[]
   downloads   Download[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
