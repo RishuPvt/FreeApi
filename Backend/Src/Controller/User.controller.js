@@ -102,9 +102,6 @@ const logoutUser = async (req, res) => {
       where: {
         id: userId,
       },
-      data: {
-        refreshToken: null,
-      },
     });
     const options = {
       httpOnly: true,
@@ -122,6 +119,8 @@ const logoutUser = async (req, res) => {
         })
       );
   } catch (error) {
+    console.log(error);
+    
     throw new ApiError(500, "Error while logging out user");
   }
 };
