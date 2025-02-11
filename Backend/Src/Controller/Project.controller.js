@@ -1,6 +1,7 @@
 import ApiError from "../Utility/ApiError.js";
 import ApiResponse from "../Utility/ApiResponse.js";
 import prisma from "../DB/Database.js";
+import { uploadOnCloudinary } from "../Utility/Cloudinary.js";
 
 const uploadProject = async (req, res) => {
   const { title, description, language, framework, githubUrl } = req.body;
@@ -19,6 +20,23 @@ const uploadProject = async (req, res) => {
   if (!user) {
     throw new ApiError(404, "User not found.");
   }
+  // Check if files were uploaded
+  if (!req.files || req.files.length === 0) {
+    throw new ApiError(400, "No files uploaded");
+  }
+
+  // Upload files to Cloudinary
+  const fileUrls = [];
+  for (const file of req.files) {
+    const localFilePath = file.path;
+    const cloudinaryResponse = await uploadOnCloudinary(localFilePath);
+
+    if (cloudinaryResponse && cloudinaryResponse.secure_url) {
+      fileUrls.push(cloudinaryResponse.secure_url); // Store the secure URL
+    } else {
+      throw new ApiError(500, "Failed to upload files to Cloudinary");
+    }
+  }
 
   const project = await prisma.project.create({
     data: {
@@ -28,6 +46,7 @@ const uploadProject = async (req, res) => {
       framework,
       githubUrl,
       userId,
+      fileUrl: fileUrls,
     },
   });
 
@@ -105,7 +124,6 @@ const updateProject = async (req, res) => {
 };
 
 const projectDetails = async (req, res) => {
-  
   const projectId = req.params.projectId;
   const existproject = await prisma.project.findUnique({
     where: {
@@ -125,10 +143,99 @@ const projectDetails = async (req, res) => {
     );
 };
 
-const deleteProject = async (req, res) => {};
-const downloadProject = async (req, res) => {};
+const deleteProject = async (req, res) => {
+  const projectId = req.params.projectId;
+  const userId = req.user?.id;
 
-const downloadCount = async (req, res) => {};
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+  if (!user) {
+    throw new ApiError(400, "User Not Found");
+  }
+  const project = await prisma.project.findUnique({
+    where: {
+      id: projectId,
+    },
+  });
+
+  if (project.userId != userId) {
+    throw new ApiError(400, "You are not have auth to delete this project");
+  }
+
+  const Deleteproject = await prisma.project.delete({
+    where: {
+      id: projectId,
+    },
+  });
+  if (!project) {
+    throw new ApiError(400, "Error While deleting");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Project deleted sucssesfully"));
+};
+
+const downloadProject = async (req, res) => {
+  const projectId = req.params.projectId;
+
+  try {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+    });
+
+    if (!project) {
+      throw new ApiError(400, "Project not found");
+    }
+
+    if (!project.fileUrl) {
+      throw new ApiError(400, "File URL not found for this project");
+    }
+
+    await prisma.project.update({
+      where: { id: projectId },
+      data: { downloadCount: project.downloadCount + 1 },
+    });
+
+    return res.status(200).json(new ApiResponse(200,project, "download fetched"));
+  } catch (error) {
+    console.error("Error downloading project:", error);
+    throw new ApiError(400, "Error downloading project");
+  }
+};
+
+const getDownloadCount = async (req, res) => {
+  const projectId = req.params.projectId;
+
+  try {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: { downloadCount: true },
+    });
+
+    if (!project) {
+      throw new ApiError(400, "Project not found");
+    }
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { downloadCount: project.downloadCount },
+          "project count fetched succesfully"
+        )
+      );
+  } catch (error) {
+    console.error("Error fetching download count:", error);
+    return res
+      .status(400)
+      .json(new ApiResponse(400, "Error fetching download count"));
+  }
+};
 
 export {
   uploadProject,
@@ -137,5 +244,5 @@ export {
   deleteProject,
   projectDetails,
   downloadProject,
-  downloadCount,
+  getDownloadCount,
 };
