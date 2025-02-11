@@ -14,35 +14,26 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(uuid())
+  id           String    @id @default(uuid())
   name         String?
-  email        String     @unique
+  email        String    @unique
   password     String
   uploadedCode Project[]
-  downloads    Download[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Project {
-  id          String     @id @default(uuid())
-  title       String
-  description String
-  githubUrl   String
-  uploadedBy  User       @relation(fields: [userId], references: [id])
-  userId      String
-  language    String
-  framework   String
-  downloads   Download[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-}
-
-model Download {
-  id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  Project   Project  @relation(fields: [ProjectId], references: [id])
-  ProjectId String
-  createdAt DateTime @default(now())
+  id            String   @id @default(uuid())
+  title         String
+  description   String
+  githubUrl     String
+  uploadedBy    User     @relation(fields: [userId], references: [id])
+  userId        String
+  language      String
+  framework     String
+  fileUrl       String[]
+  downloadCount Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
