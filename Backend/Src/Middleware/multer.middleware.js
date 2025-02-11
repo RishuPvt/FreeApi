@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 
 // Get the __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(__filename);  
 
 // Resolve the full path to the directory where files will be stored
 const tempDir = path.resolve(__dirname, "../public/temp");
@@ -28,5 +28,5 @@ const storage = multer.diskStorage({
   },
 });
 
-export const upload = multer({ storage }).array("files", 50); // Accept multiple files
+export const upload = multer({ storage }) // Accept multiple files
 
