@@ -27,7 +27,7 @@ export function UploadForm({ onBack }: UploadFormProps) {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-11">
       <button
         onClick={onBack}
         className="flex items-center text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-8"

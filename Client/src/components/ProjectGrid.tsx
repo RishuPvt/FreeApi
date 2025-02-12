@@ -26,10 +26,10 @@ export function ProjectGrid({ projects, onProjectClick, onLike }: ProjectGridPro
                   </span>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center text-yellow-500">
+                  {/* <div className="flex items-center text-yellow-500">
                     <Star className="w-4 h-4 mr-1" />
                     <span className="text-sm">{project.stars}</span>
-                  </div>
+                  </div> */}
                   <div className="flex items-center text-gray-600 dark:text-gray-400">
                     <Download className="w-4 h-4 mr-1" />
                     <span className="text-sm">{project.downloads}</span>
@@ -74,12 +74,12 @@ export function ProjectGrid({ projects, onProjectClick, onLike }: ProjectGridPro
                     className="flex items-center text-gray-600 dark:text-gray-400 hover:text-pink-500 dark:hover:text-pink-400 transition-colors"
                   >
                     <Heart className={`w-4 h-4 mr-1 ${project.likes ? 'fill-current text-pink-500' : ''}`} />
-                    <span className="text-sm">{project.likes || 0}</span>
+                    {/* <span className="text-sm">{project.likes || 0}</span> */}
                   </button>
-                  <div className="flex items-center text-emerald-500">
+                  {/* <div className="flex items-center text-emerald-500">
                     <ThumbsUp className="w-4 h-4 mr-1" />
                     <span className="text-sm">{project.rating}%</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
