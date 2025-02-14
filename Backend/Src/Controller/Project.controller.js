@@ -16,27 +16,29 @@ const uploadProject = async (req, res) => {
       id: userId,
     },
   });
-
+  
   if (!user) {
     throw new ApiError(404, "User not found.");
   }
-  // Check if files were uploaded
+
+  
   if (!req.files || req.files.length === 0) {
     throw new ApiError(400, "No files uploaded");
   }
-
-  // Upload files to Cloudinary
+  
   const fileUrls = [];
   for (const file of req.files) {
-    const localFilePath = file.path;
-    const cloudinaryResponse = await uploadOnCloudinary(localFilePath);
-
+    console.log("Uploading File Path:", file.path); // Debugging line
+    const cloudinaryResponse = await uploadOnCloudinary(file.path);
+  
     if (cloudinaryResponse && cloudinaryResponse.secure_url) {
-      fileUrls.push(cloudinaryResponse.secure_url); // Store the secure URL
+      fileUrls.push(cloudinaryResponse.secure_url);
     } else {
       throw new ApiError(500, "Failed to upload files to Cloudinary");
     }
   }
+  console.log("Uploaded Files URLs:", fileUrls);
+  
 
   const project = await prisma.project.create({
     data: {
@@ -48,7 +50,7 @@ const uploadProject = async (req, res) => {
       userId,
       fileUrl: fileUrls,
     },
-  });
+  });  
 
   return res
     .status(200)
@@ -184,7 +186,7 @@ const downloadProject = async (req, res) => {
 
   try {
     const project = await prisma.project.findUnique({
-      where: { id: projectId },
+      where: { id: projectId }
     });
 
     if (!project) {
