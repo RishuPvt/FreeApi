@@ -16,29 +16,26 @@ const uploadProject = async (req, res) => {
       id: userId,
     },
   });
-  
+
   if (!user) {
     throw new ApiError(404, "User not found.");
   }
 
-  
   if (!req.files || req.files.length === 0) {
     throw new ApiError(400, "No files uploaded");
   }
-  
+
   const fileUrls = [];
   for (const file of req.files) {
     console.log("Uploading File Path:", file.path); // Debugging line
     const cloudinaryResponse = await uploadOnCloudinary(file.path);
-  
+
     if (cloudinaryResponse && cloudinaryResponse.secure_url) {
       fileUrls.push(cloudinaryResponse.secure_url);
     } else {
       throw new ApiError(500, "Failed to upload files to Cloudinary");
     }
   }
-  console.log("Uploaded Files URLs:", fileUrls);
-  
 
   const project = await prisma.project.create({
     data: {
@@ -50,7 +47,7 @@ const uploadProject = async (req, res) => {
       userId,
       fileUrl: fileUrls,
     },
-  });  
+  });
 
   return res
     .status(200)
@@ -186,7 +183,7 @@ const downloadProject = async (req, res) => {
 
   try {
     const project = await prisma.project.findUnique({
-      where: { id: projectId }
+      where: { id: projectId },
     });
 
     if (!project) {
@@ -202,7 +199,9 @@ const downloadProject = async (req, res) => {
       data: { downloadCount: project.downloadCount + 1 },
     });
 
-    return res.status(200).json(new ApiResponse(200,project, "download fetched"));
+    return res
+      .status(200)
+      .json(new ApiResponse(200, project, "download fetched"));
   } catch (error) {
     console.error("Error downloading project:", error);
     throw new ApiError(400, "Error downloading project");
