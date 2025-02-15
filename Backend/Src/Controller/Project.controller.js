@@ -21,9 +21,9 @@ const uploadProject = async (req, res) => {
     throw new ApiError(404, "User not found.");
   }
 
-  if (!req.files || req.files.length === 0) {
-    throw new ApiError(400, "No files uploaded");
-  }
+  // if (!req.files || req.files.length === 0) {
+  //   throw new ApiError(400, "No files uploaded");
+  // }
 
   const fileUrls = [];
   for (const file of req.files) {
@@ -45,7 +45,7 @@ const uploadProject = async (req, res) => {
       framework,
       githubUrl,
       userId,
-      fileUrl: fileUrls,
+      fileUrl: fileUrls || null,
     },
   });
 
