@@ -124,6 +124,7 @@ export function Navbar({ onUploadClick, onHomeClick, onDocsClick, currentView }:
       <AuthModal 
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
+        onLoginSuccess={() => console.log("User logged in!")} 
       />
     </>
   );

@@ -6,7 +6,7 @@ import { backendUrl } from "../API/BackendApi";
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLoginSuccess: () => void; // Callback for successful login
+  onLoginSuccess: () => void;
 }
 
 export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
@@ -33,24 +33,33 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
       const endpoint = isSignUp ? "/users/registerUser" : "/users/loginUser";
       const response = await axios.post(`${backendUrl}${endpoint}`, user, {
         withCredentials: true,
+        validateStatus: () => true, // Allows manual handling of response
       });
 
-      if (response.status === 200) {
+      if (response.data.success) {
         console.log(
-          isSignUp ? "User registered successfully!" : "User logged in successfully!"
+          isSignUp
+            ? "User registered successfully!"
+            : "User logged in successfully!"
         );
         onLoginSuccess();
-        onClose(); 
+        onClose();
+      } else {
+        const errorMessage =
+          response.data.message || "Authentication failed. Please try again.";
+        console.error(errorMessage);
       }
     } catch (error: any) {
+      console.error("Caught error:", error);
+
       const errorMessage =
-        error.response?.data?.message || "Failed to authenticate. Please try again.";
+        error.response?.data?.message ||
+        "Failed to authenticate. Please try again.";
       console.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
-
 
   if (!isOpen) return null;
 
@@ -133,11 +142,7 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             disabled={loading}
           >
-            {loading
-              ? "Loading..."
-              : isSignUp
-              ? "Sign up"
-              : "Sign in"}
+            {loading ? "Loading..." : isSignUp ? "Sign up" : "Sign in"}
           </button>
         </form>
 

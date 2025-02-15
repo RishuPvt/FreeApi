@@ -6,7 +6,6 @@ import axios from "axios";
 interface UploadFormProps {
   onBack: () => void;
 }
-
 export function UploadForm({ onBack }: UploadFormProps) {
   const [formData, setFormData] = useState({
     title: "",
@@ -17,7 +16,7 @@ export function UploadForm({ onBack }: UploadFormProps) {
     githubUrl: "",
   });
   const [loading, setloading] = useState(false);
-  const [media, setMedia] = useState<File[]>([])
+  const [media, setMedia] = useState<File[]>([]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -28,20 +27,18 @@ export function UploadForm({ onBack }: UploadFormProps) {
     }
   };
 
-  
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      setMedia(Array.from(files)); 
+      setMedia(Array.from(files));
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setloading(true);
-  
+
     try {
-  
       const form = new FormData();
       form.append("title", formData.title);
       form.append("description", formData.description);
@@ -49,28 +46,30 @@ export function UploadForm({ onBack }: UploadFormProps) {
       form.append("framework", formData.framework);
       form.append("author", formData.author);
       form.append("githubUrl", formData.githubUrl);
-  
+
       if (media.length > 0) {
-        media.forEach((file) => form.append("fileUrl", file)); 
+        media.forEach((file) => form.append("fileUrl", file));
       }
 
-
-      const response = await axios.post(`${backendUrl}/projects/uploadproject`, form, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        `${backendUrl}/projects/uploadproject`,
+        form,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+        }
+      );
       console.log(response);
-      
+
       if (response.status === 200) {
         console.log("Upload successful!");
       }
     } catch (error: any) {
-      console.error(error.response?.data?.message || "Failed to upload.");
+      console.log(error);
     } finally {
       setloading(false);
     }
   };
-  
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-11">
@@ -218,10 +217,17 @@ export function UploadForm({ onBack }: UploadFormProps) {
             <input type="file" multiple onChange={handleFileChange} />
             <button
               type="submit"
-              className="w-full flex items-center justify-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+              disabled={loading}
+              className="w-full flex items-center justify-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors disabled:opacity-50"
             >
-              <Upload className="w-5 h-5 mr-2" />
-              Upload Project
+              {loading ? (
+                <span>Uploading...</span>
+              ) : (
+                <>
+                  <Upload className="w-5 h-5 mr-2" />
+                  Upload Project
+                </>
+              )}
             </button>
           </form>
         </div>
