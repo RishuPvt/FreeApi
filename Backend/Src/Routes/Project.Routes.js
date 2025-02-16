@@ -6,7 +6,7 @@ const router = Router();
 
 router.route("/uploadproject").post(verifyJWT, upload.array("fileUrl", 50), uploadProject);
 router.route("/allproject").get(allProject);
-router.route("/updateProject/:projectId").patch(verifyJWT , updateProject);
+router.route("/updateProject/:projectId").put(verifyJWT , updateProject);
 router.route("/projectDetails/:projectId").get( projectDetails);
 router.route("/deleteProject/:projectId").delete( verifyJWT , deleteProject);
 
