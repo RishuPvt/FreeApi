@@ -125,4 +125,22 @@ const logoutUser = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser, logoutUser };
+const currentUser =async(req , res)=>{
+const userId= req.user?.id;
+try {
+  const user = await prisma.user.findUnique({
+    where :{
+      id : userId
+    }
+  })
+  if(!user){
+    throw new ApiError(400 , "User Not found");
+  }
+
+  return res.status(200).json(new ApiResponse(200, user , "Current user fetched succesfully"))
+} catch (error) {
+  throw new ApiError(400 , "Somthing went wrong while current user")
+}
+}
+
+export { registerUser, loginUser, logoutUser ,currentUser };
