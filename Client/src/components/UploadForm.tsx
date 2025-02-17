@@ -202,7 +202,7 @@ export function UploadForm({ onBack }: UploadFormProps) {
                 htmlFor="githubUrl"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                GitHub Repository URL (optional)
+                GitHub Repository URL *
               </label>
               <input
                 type="url"
@@ -214,7 +214,19 @@ export function UploadForm({ onBack }: UploadFormProps) {
                 placeholder="https://github.com/username/repository"
               />
             </div>
-            <input type="file" multiple onChange={handleFileChange} />
+            <label className="flex items-center gap-2 w-full max-w-xs px-4 py-2  text-white rounded-lg shadow-md cursor-pointer hover:bg-indigo-700 transition">
+              <Upload className="w-5 h-5" />
+              <span className="text-sm font-medium ">
+                Upload Files (Optional)
+              </span>
+              <input
+                type="file"
+                multiple
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </label>
+
             <button
               type="submit"
               disabled={loading}
@@ -224,7 +236,7 @@ export function UploadForm({ onBack }: UploadFormProps) {
                 <span>Uploading...</span>
               ) : (
                 <>
-                  <Upload className="w-5 h-5 mr-2" />
+                  <Upload className="w-5 h-5 mr-2 " />
                   Upload Project
                 </>
               )}

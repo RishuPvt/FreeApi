@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useUserStore } from "./Store/User.store";
+import { backendUrl } from "./API/BackendApi";
 import { Navbar } from "./components/Navbar";
 import { Hero } from "./components/Hero";
 import { SearchFilters } from "./components/SearchFilters";
@@ -20,6 +23,38 @@ function App() {
     framework: "",
     apiType: "",
   });
+  const [loading, setloading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/users/currentUser`, {
+          withCredentials: true,
+        });
+
+        if (response.status === 200) {
+          console.log(response.data.message || "User login successful!");
+          const userData = response.data.data;
+
+          useUserStore.getState().setUser({
+            name: userData.name,
+            id: userData.id,
+            isAuth: true,
+          });
+        }
+      } catch (error: any) {
+        console.error("Caught error:", error);
+
+        const errorMessage =
+          error.response?.data?.message ||
+          "Failed to authenticate. Please try again.";
+        console.error(errorMessage);
+      } finally {
+        setloading(false);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const handleProjectClick = (project: Backend) => {
     setSelectedProject(project);
@@ -33,23 +68,42 @@ function App() {
 
   const handleSearch = (query: string) => setSearchQuery(query);
 
-  const handleFilterChange = (type: "language" | "framework" | "apiType", value: string) => {
+  const handleFilterChange = (
+    type: "language" | "framework" | "apiType",
+    value: string
+  ) => {
     setFilters((prev) => ({ ...prev, [type]: value }));
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
-      <Navbar onUploadClick={() => navigateTo("upload")} onHomeClick={() => navigateTo("home")} onDocsClick={() => navigateTo("docs")} currentView={view} />
+      <Navbar
+        onUploadClick={() => navigateTo("upload")}
+        onHomeClick={() => navigateTo("home")}
+        onDocsClick={() => navigateTo("docs")}
+        currentView={view}
+      />
       <main className="flex-grow">
         {view === "home" && (
           <>
             <Hero onUploadClick={() => navigateTo("upload")} />
-            <SearchFilters onSearch={handleSearch} onFilterChange={handleFilterChange} filters={filters} />
-            <ProjectGrid searchQuery={searchQuery} filters={filters} onProjectClick={handleProjectClick} />
+            <SearchFilters
+              onSearch={handleSearch}
+              onFilterChange={handleFilterChange}
+              filters={filters}
+            />
+            <ProjectGrid
+              searchQuery={searchQuery}
+              filters={filters}
+              onProjectClick={handleProjectClick}
+            />
           </>
         )}
         {view === "detail" && selectedProject && (
-          <ProjectDetail project={selectedProject} onBack={() => navigateTo("home")} />
+          <ProjectDetail
+            project={selectedProject}
+            onBack={() => navigateTo("home")}
+          />
         )}
         {view === "upload" && <UploadForm onBack={() => navigateTo("home")} />}
         {view === "docs" && <Documentation onBack={() => navigateTo("home")} />}
