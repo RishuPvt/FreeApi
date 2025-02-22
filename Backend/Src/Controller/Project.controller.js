@@ -51,7 +51,7 @@ const uploadProject = async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, project, "Tweet Created Succesfully"));
+    .json(new ApiResponse(200, project, "Project Uploaded Succesfully"));
 };
 
 const allProject = async (req, res) => {
