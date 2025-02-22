@@ -29,13 +29,13 @@ export function Footer({ currentView, onDocsClick }: FooterProps) {
             </p>
             <div className="mt-6 flex space-x-4">
               <a
-                href="#"
+                href="/"
                 className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
               >
                 <Github className="w-6 h-6" />
               </a>
               <a
-                href="#"
+                href="/"
                 className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
               >
                 <Twitter className="w-6 h-6" />

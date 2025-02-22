@@ -4,6 +4,7 @@ import axios from "axios";
 import type { Backend } from "../types";
 import { backendUrl } from "../API/BackendApi";
 import { useUserStore } from "../Store/User.store";
+import { toast } from "react-toastify";
 interface ProjectGridProps {
   searchQuery: string;
   filters: {
@@ -54,9 +55,13 @@ export function ProjectGrid({
         `${backendUrl}/projects/deleteProject/${projectId}`,
         { withCredentials: true }
       );
+
+      if (response.status === 200) {
+        toast.success("Project deleted succesfully");
+      }
       setProjects(response.data.data || []);
-    } catch (error) {
-      console.error("Error deleting project:", error);
+    } catch (error: any) {
+      toast.error("Error deleting project:", error);
     } finally {
       setLoading(false);
     }

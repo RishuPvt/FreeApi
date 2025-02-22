@@ -11,6 +11,8 @@ import { UploadForm } from "./components/UploadForm";
 import { Documentation } from "./components/Documentation";
 import { Footer } from "./components/Footer";
 import type { Backend } from "./types";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [view, setView] = useState<"home" | "detail" | "upload" | "docs">(
@@ -33,7 +35,7 @@ function App() {
         });
 
         if (response.status === 200) {
-          console.log(response.data.message || "User login successful!");
+          toast.success(response.data.message || "User login successful!");
           const userData = response.data.data;
 
           useUserStore.getState().setUser({
@@ -41,6 +43,10 @@ function App() {
             id: userData.id,
             isAuth: true,
           });
+        }
+        
+        if (response.status === 401){
+          toast.error("Please loggedIn")
         }
       } catch (error: any) {
         console.error("Caught error:", error);
@@ -77,6 +83,19 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+      {/* ToastContainer should be placed here */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+
       <Navbar
         onUploadClick={() => navigateTo("upload")}
         onHomeClick={() => navigateTo("home")}

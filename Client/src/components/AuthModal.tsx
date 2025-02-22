@@ -2,7 +2,7 @@ import { X } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
 import { backendUrl } from "../API/BackendApi";
-
+import { toast } from "react-toastify";
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -37,17 +37,24 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
       });
 
       if (response.data.success) {
-        console.log(
+        toast.success(
           isSignUp
             ? "User registered successfully!"
             : "User logged in successfully!"
         );
         onLoginSuccess();
         onClose();
-      } else {
+      }
+      if (response.status === 401) {
+        toast.error("Invalid user password");
+      }
+      if (response.status === 409) {
+        toast.error("User with Email. already exists");
+      }
+      if (response.status === 500) {
         const errorMessage =
           response.data.message || "Authentication failed. Please try again.";
-        console.error(errorMessage);
+        toast.error(errorMessage);
       }
     } catch (error: any) {
       console.error("Caught error:", error);

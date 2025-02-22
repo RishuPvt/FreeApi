@@ -165,6 +165,7 @@ export function Documentation({ onBack }: DocumentationProps) {
 
         {/* Floating Action Buttons */}
         <div className="fixed right-8 bottom-8 space-y-4">
+          <a href='https://github.com/RishuPvt'>
           <motion.button 
             whileHover={{ scale: 1.1 }}
             className="p-3 bg-gray-800 text-white rounded-full shadow-lg hover:shadow-xl"
@@ -172,6 +173,7 @@ export function Documentation({ onBack }: DocumentationProps) {
           >
             <Github className="w-6 h-6" />
           </motion.button>
+          </a>
         </div>
       </div>
     </div>

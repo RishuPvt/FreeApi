@@ -2,7 +2,7 @@ import { ArrowLeft, Upload } from "lucide-react";
 import { useState } from "react";
 import { backendUrl } from "../API/BackendApi";
 import axios from "axios";
-
+import {toast} from "react-toastify"
 interface UploadFormProps {
   onBack: () => void;
 }
@@ -62,10 +62,11 @@ export function UploadForm({ onBack }: UploadFormProps) {
       console.log(response);
 
       if (response.status === 200) {
-        console.log("Upload successful!");
+        toast.success("Upload successful!");
       }
     } catch (error: any) {
-      console.log(error);
+      const errorMessage = "Upload failed. Please try again.";
+        toast.error(errorMessage);
     } finally {
       setloading(false);
     }
