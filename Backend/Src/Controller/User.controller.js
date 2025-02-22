@@ -17,7 +17,7 @@ const registerUser = async (req, res) => {
     },
   });
   if (existedUser) {
-    throw new ApiError(409, "User with Email. already exists");
+    return res.status(409).json( new ApiError(409, "User with Email. already exists"));
   }
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
@@ -35,6 +35,7 @@ const registerUser = async (req, res) => {
 
 //Handler : To manage user LogIn
 const loginUser = async (req, res) => {
+ try {
   const { email, password } = req.body;
   if (!email || !password) {
     throw new ApiError(404, "email & password is Required");
@@ -50,7 +51,7 @@ const loginUser = async (req, res) => {
   }
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
   if (!isPasswordCorrect) {
-    throw new ApiError(401, "Invalid user password");
+    return res.status(401).json(new  ApiError(401,"Invalid user password"));
   }
   const accessToken = jwt.sign(
     {
@@ -84,6 +85,9 @@ const loginUser = async (req, res) => {
         email: user.email,
       })
     );
+ } catch (error) {
+  return res.status(500).json(new ApiError(500 , "Authentication failed. Please try again."))
+ }
 };
 
 const logoutUser = async (req, res) => {
