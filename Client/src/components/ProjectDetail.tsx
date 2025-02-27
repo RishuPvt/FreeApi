@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import { toast } from "react-toastify";
 
 interface ProjectDetailProps {
   project: Backend;
@@ -54,7 +55,7 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
     if (files?.length > 0) {
       await downloadFilesAsZip(files);
     } else {
-      console.error("No files to download");
+      toast.error("No files to download");
     }
     setloading(false);
   };
