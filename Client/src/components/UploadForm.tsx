@@ -65,7 +65,7 @@ export function UploadForm({ onBack }: UploadFormProps) {
         toast.success("Upload successful!");
       }
     } catch (error: any) {
-      const errorMessage = "Upload failed. Please try again.";
+      const errorMessage = "Upload failed. Please Logged In.";
         toast.error(errorMessage);
     } finally {
       setloading(false);
